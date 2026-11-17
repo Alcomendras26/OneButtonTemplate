@@ -2,7 +2,8 @@
     "name": "Kaiju Run",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "arcade-background-scroll": "github:microsoft/arcade-background-scroll#v0.1.4"
     },
     "files": [
         "main.blocks",
