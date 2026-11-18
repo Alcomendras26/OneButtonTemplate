@@ -1,6 +1,3 @@
-sprites.onCreated(SpriteKind.Enemy, function (sprite) {
-	
-})
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     FIRE_BALL = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -338,8 +335,17 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    otherSprite.destroy()
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    otherSprite.destroy()
+    info.changeLifeBy(-1)
+})
+let Shellchange: Sprite = null
 let FIRE_BALL: Sprite = null
 let Kaiju: Sprite = null
+let ChangeAmount = 5
 Kaiju = sprites.create(img`
     ........................
     ........................
@@ -645,3 +651,100 @@ Kaiju,
 200,
 true
 )
+forever(function () {
+    Shellchange = sprites.createProjectileFromSide(img`
+        . . . . . . . e e e e e . . . . 
+        . . . . . e e 2 2 2 2 2 e . . . 
+        . . . . e e 2 2 2 2 2 2 2 e . . 
+        . . . . e 9 4 2 2 2 2 2 4 b e . 
+        . . e e 9 9 4 4 2 2 2 2 4 9 b e 
+        . e 2 2 9 9 4 4 4 2 2 2 4 9 9 e 
+        e 2 2 2 9 9 2 4 4 4 4 4 2 9 9 e 
+        e 2 2 2 9 9 e e e e e e e 9 9 e 
+        e 2 2 2 9 b e b b b e b e b 9 e 
+        e 2 e e e e b b b b e b b e b e 
+        e e 3 3 e e 2 2 2 2 e 2 2 e e e 
+        e 3 3 e e e e e e e e e e e e e 
+        e e e e e e e e e e e e e e e e 
+        e e e e f f f e e e e f f f e e 
+        . e e f b c c f e e f b c c f . 
+        . . . . b b f . . . . b b f . . 
+        `, -90, 0)
+    Shellchange.y = 65
+    Shellchange.setKind(SpriteKind.Enemy)
+    pause(2100)
+    animation.runImageAnimation(
+    Shellchange,
+    [img`
+        . . . . . . . e e e e e . . . . 
+        . . . . . e e 2 2 2 2 2 e . . . 
+        . . . . e e 2 2 2 2 2 2 2 e . . 
+        . . . . e 9 4 2 2 2 2 2 4 b e . 
+        . . e e 9 9 4 4 2 2 2 2 4 9 b e 
+        . e 2 2 9 9 4 4 4 2 2 2 4 9 9 e 
+        e 2 2 2 9 9 2 4 4 4 4 4 2 9 9 e 
+        e 2 2 2 9 9 e e e e e e e 9 9 e 
+        e 2 2 2 9 b e b b b e b e b 9 e 
+        e 2 e e e e b b b b e b b e b e 
+        e e 3 3 e e 2 2 2 2 e 2 2 e e e 
+        e 3 3 e e e e e e e e e e e e e 
+        e e e e e e e e e e e e e e e e 
+        e e e e f f f e e e e f f f e e 
+        . e e f b c c f e e f b c c f . 
+        . . . . b b f . . . . b b f . . 
+        `,img`
+        . . . . . . . e e e e e . . . . 
+        . . . . . e e 2 2 2 2 2 e . . . 
+        . . . . e e 2 2 2 2 2 2 2 e . . 
+        . . . . e 9 4 4 4 2 2 2 4 b e . 
+        . . e e 9 9 4 4 4 4 2 2 4 9 b e 
+        . e 2 2 9 9 4 4 4 4 4 2 4 9 9 e 
+        e 2 2 2 9 9 2 4 4 4 4 4 2 9 9 e 
+        e 2 2 2 9 9 e e e e e e e 9 9 e 
+        e 2 2 2 9 b e b b b e b e b 9 e 
+        e 2 e e e e b b b b e b b e b e 
+        e e 3 3 e e 2 2 2 2 e 2 2 e e e 
+        e 3 3 e e e e e e e e e e e e e 
+        e e e e e e e e e e e e e e e e 
+        e e e e f f f e e e e f f f e e 
+        . e e f f f b f e e f f f b f . 
+        . . . . c b b . . . . c b b . . 
+        `,img`
+        . . . . . . . e e e e e . . . . 
+        . . . . . e e 2 2 2 2 2 e . . . 
+        . . . . e e 2 2 2 2 2 2 2 e . . 
+        . . . . e 9 4 2 2 2 4 4 4 b e . 
+        . . e e 9 9 4 2 2 2 4 4 4 9 b e 
+        . e 2 2 9 9 4 4 2 2 2 4 4 9 9 e 
+        e 2 2 2 9 9 2 4 4 4 4 4 2 9 9 e 
+        e 2 2 2 9 9 e e e e e e e 9 9 e 
+        e 2 2 2 9 b e b b b e b e b 9 e 
+        e 2 e e e e b b b b e b b e b e 
+        e e 3 3 e e 2 2 2 2 e 2 2 e e e 
+        e 3 3 e e e e e e e e e e e e e 
+        e e e e e e e e e e e e e e e e 
+        e e e e f f f e e e e f f f e e 
+        . e e f c b b f e e f c b b f . 
+        . . . . f f f . . . . f f f . . 
+        `,img`
+        . . . . . . . e e e e e . . . . 
+        . . . . . e e 2 2 2 2 2 e . . . 
+        . . . . e e 2 2 2 2 2 2 2 e . . 
+        . . . . e 9 4 2 2 2 2 2 4 b e . 
+        . . e e 9 9 4 2 2 2 2 2 4 9 b e 
+        . e 2 2 9 9 4 4 2 2 2 2 4 9 9 e 
+        e 2 2 2 9 9 2 4 4 4 4 4 2 9 9 e 
+        e 2 2 2 9 9 e e e e e e e 9 9 e 
+        e 2 2 2 9 b e b b b e b e b 9 e 
+        e 2 e e e e b b b b e b b e b e 
+        e e 3 3 e e 2 2 2 2 e 2 2 e e e 
+        e 3 3 e e e e e e e e e e e e e 
+        e e e e e e e e e e e e e e e e 
+        e e e e f f f e e e e f f f e e 
+        . e e f b b c f e e f b b c f . 
+        . . . . c f f . . . . c f f . . 
+        `],
+    1000,
+    true
+    )
+})
