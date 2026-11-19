@@ -1,3 +1,7 @@
+namespace SpriteKind {
+    export const Friend = SpriteKind.create()
+    export const Child = SpriteKind.create()
+}
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     FIRE_BALL = sprites.create(img`
         . . . . . . . . . . . . . . . . 
@@ -18,6 +22,7 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
         . . . . . 2 2 2 2 2 2 . . . . . 
         `, SpriteKind.Projectile)
     FIRE_BALL.setVelocity(90, 0)
+    music.play(music.createSoundEffect(WaveShape.Square, 1600, 2177, 255, 90, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.UntilDone)
     animation.runImageAnimation(
     Kaiju,
     [img`
@@ -335,16 +340,27 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     true
     )
 })
-sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Child, function (sprite, otherSprite) {
+    babyDino.destroy()
+    info.changeScoreBy(1)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Friend, function (sprite, otherSprite) {
     otherSprite.destroy()
+    info.changeScoreBy(1)
+})
+sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    car.destroy()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     info.changeLifeBy(-1)
 })
-let Shellchange: Sprite = null
+let Voiture: Sprite = null
+let car: Sprite = null
+let babyDino: Sprite = null
 let FIRE_BALL: Sprite = null
 let Kaiju: Sprite = null
+info.startCountdown(30)
 let ChangeAmount = 5
 Kaiju = sprites.create(img`
     ........................
@@ -651,8 +667,10 @@ Kaiju,
 200,
 true
 )
+music.play(music.createSoundEffect(WaveShape.Square, 200, 487, 255, 110, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.UntilDone)
 forever(function () {
-    Shellchange = sprites.createProjectileFromSide(img`
+    pause(500)
+    car = sprites.createProjectileFromSide(img`
         . . . . . . . e e e e e . . . . 
         . . . . . e e 2 2 2 2 2 e . . . 
         . . . . e e 2 2 2 2 2 2 2 e . . 
@@ -670,11 +688,11 @@ forever(function () {
         . e e f b c c f e e f b c c f . 
         . . . . b b f . . . . b b f . . 
         `, -90, 0)
-    Shellchange.y = 65
-    Shellchange.setKind(SpriteKind.Enemy)
-    pause(2100)
+    car.y = 65
+    car.setKind(SpriteKind.Enemy)
+    pause(1000)
     animation.runImageAnimation(
-    Shellchange,
+    car,
     [img`
         . . . . . . . e e e e e . . . . 
         . . . . . e e 2 2 2 2 2 e . . . 
@@ -744,7 +762,218 @@ forever(function () {
         . e e f b b c f e e f b b c f . 
         . . . . c f f . . . . c f f . . 
         `],
-    1000,
+    200,
+    true
+    )
+})
+forever(function () {
+    Voiture = sprites.createProjectileFromSide(img`
+        . . . f f . . 8 8 8 8 8 . . . . 
+        . . f f . 8 8 6 6 6 6 6 8 . . . 
+        . . f . 8 8 6 6 6 6 6 6 6 8 . . 
+        . f f . 8 9 7 6 6 6 6 6 7 b 8 . 
+        f f 8 8 9 9 7 7 6 6 6 6 7 9 b 8 
+        f 8 6 6 9 9 7 7 7 6 6 6 7 9 9 8 
+        8 6 6 6 9 9 6 7 7 7 7 7 6 9 9 8 
+        8 6 6 6 9 9 8 8 8 8 8 8 8 9 9 8 
+        8 6 6 6 9 b f f b b 8 b 8 b 9 8 
+        8 6 8 8 f f f b b b 8 b b 8 b 8 
+        8 8 3 3 f 8 6 6 6 6 8 6 6 8 8 8 
+        f f 3 f f 8 8 8 8 8 8 8 8 8 8 8 
+        8 f f f 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 f f f 8 8 8 8 f f f 8 8 
+        . 8 8 f b c c f 8 8 f b c c f . 
+        . . . . b b f . . . . b b f . . 
+        `, -90, 0)
+    Voiture.y = 65
+    Voiture.setKind(SpriteKind.Friend)
+    pause(2000)
+    animation.runImageAnimation(
+    Voiture,
+    [img`
+        . . . . . . . 8 8 8 8 8 . . . . 
+        . . . f f 8 8 6 6 6 6 6 8 . . . 
+        . f f f 8 8 6 6 6 6 6 6 6 8 . . 
+        . f . . 8 9 7 6 6 6 6 6 7 b 8 . 
+        f . 8 8 9 9 7 7 6 6 6 6 7 9 b 8 
+        f 8 6 6 9 9 7 7 7 6 6 6 7 9 9 8 
+        f 6 6 6 9 9 6 7 7 7 7 7 6 9 9 8 
+        8 6 6 6 9 9 8 8 8 8 8 8 8 9 9 8 
+        8 6 6 6 9 b 8 f f f 8 b 8 b 9 8 
+        8 6 8 8 8 f f b b b 8 b b 8 b 8 
+        8 8 3 3 f f 6 6 6 6 8 6 6 8 8 8 
+        8 f 3 f f 8 8 8 8 8 8 8 8 8 8 8 
+        8 f f f 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 f f f 8 8 8 8 f f f 8 8 
+        . 8 8 f b c c f 8 8 f b c c f . 
+        . . . . b b f . . . . b b f . . 
+        `,img`
+        . . . . . . . 8 8 8 8 8 . . . . 
+        . . . f f 8 8 6 6 6 6 6 8 . . . 
+        . . f . 8 8 6 6 6 6 6 6 6 8 . . 
+        . f . . 8 9 7 6 6 6 7 7 7 b 8 . 
+        . f 8 8 9 9 7 6 6 6 7 7 7 9 b 8 
+        f 8 6 6 9 9 7 7 6 f 6 7 7 9 9 8 
+        8 6 6 6 9 9 6 f f f f 7 6 9 9 8 
+        8 6 6 6 9 9 f f 8 8 8 8 8 9 9 8 
+        8 6 6 6 9 f f b b b 8 b 8 b 9 8 
+        8 6 8 8 f 8 b b b b 8 b b 8 b 8 
+        8 f f f 8 8 6 6 6 6 8 6 6 8 8 8 
+        f f 3 8 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 f f f 8 8 8 8 f f f 8 8 
+        . 8 8 f c b b f 8 8 f c b b f . 
+        . . . . f f f . . . . f f f . . 
+        `,img`
+        . . . . . . . 8 8 8 8 8 . . . . 
+        . . . . f f 8 6 6 6 6 6 8 . . . 
+        . . . f f 8 6 6 6 6 6 6 6 8 . . 
+        . . f . 8 9 7 6 6 6 6 6 7 b 8 . 
+        . f 8 8 9 9 7 6 6 6 6 6 7 9 b 8 
+        . f 6 6 9 9 7 7 6 6 6 6 f 9 9 8 
+        8 6 6 6 9 9 6 7 7 7 f f f 9 9 8 
+        8 6 f f f f f f f f 8 8 8 9 9 8 
+        8 f f 6 9 b 8 f b b 8 b 8 b 9 8 
+        8 f 8 8 8 8 b b b b 8 b b 8 b 8 
+        8 8 3 3 8 8 6 6 6 6 8 6 6 8 8 8 
+        8 3 3 8 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 8 
+        8 8 8 8 f f f 8 8 8 8 f f f 8 8 
+        . 8 8 f b b c f 8 8 f b b c f . 
+        . . . . c f f . . . . c f f . . 
+        `],
+    200,
+    true
+    )
+})
+forever(function () {
+    babyDino = sprites.createProjectileFromSide(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . c c c c . . . . . . . . 
+        . . c c 5 5 5 5 c c . . . . . . 
+        . c 5 5 5 5 5 5 5 5 c . . . . . 
+        c 5 5 5 5 5 1 f 5 5 5 c . . . . 
+        c 5 5 5 5 5 f f 5 5 5 5 c . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 d c . . 
+        c 5 3 3 3 5 5 5 5 5 d d d c . . 
+        . b 5 5 5 5 5 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c c . 
+        . c b b c 5 5 b b d d d d c d c 
+        . c c c c c c d d d d d d d d c 
+        . . . c c c c d 5 5 b d d d c . 
+        . . c c c c c b 5 5 b c c c . . 
+        . . c b b b c d 5 5 b c . . . . 
+        `, -90, 0)
+    babyDino.y = 65
+    babyDino.setKind(SpriteKind.Child)
+    pause(5000)
+    animation.runImageAnimation(
+    babyDino,
+    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . c c c c . . . . . . . . 
+        . . c c 5 5 5 5 c c . . . . . . 
+        . c 5 5 5 5 5 5 5 5 c . . . . . 
+        c 5 5 5 5 5 1 f 5 5 5 c . . . . 
+        c 5 5 5 5 5 f f 5 5 5 5 c . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 d c . . 
+        c 5 3 3 3 5 5 5 5 5 d d d c . . 
+        . b 5 5 5 5 5 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c c . 
+        . c b b c 5 5 b b d d d d c d c 
+        . c c c c c c d d d d d d d d c 
+        . . . c c c c d 5 5 b d d d c . 
+        . . c c c c c b 5 5 b c c c . . 
+        . . c b b b c d 5 5 b c . . . . 
+        `,img`
+        . . . . c c c c c . . . . . . . 
+        . . c c 5 5 5 5 5 c . . . . . . 
+        . c 5 5 5 5 1 f 5 5 c . . . . . 
+        c 5 5 5 5 5 f f 5 5 5 c . . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 c . . . 
+        c 5 3 3 3 5 5 5 5 5 5 5 d c . . 
+        c 5 3 3 3 5 5 5 5 5 d d d c . . 
+        . c 5 5 5 5 b 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c . . 
+        . c b b c 5 5 b b d d d d c c c 
+        . c c c c c c d d d d d d d d c 
+        . . . . c c c b 5 5 b d d d c . 
+        . . . . . c d 5 5 b b c c c . . 
+        . . . . c c c c c c c . . . . . 
+        . . . . c b b b c . . . . . . . 
+        `,img`
+        . . . . c c c c c . . . . . . . 
+        . . c c 5 5 5 5 5 c . . . . . . 
+        . c 5 5 5 5 1 f 5 5 c . . . . . 
+        c 5 5 5 5 5 f f 5 5 5 c . . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 c . . . 
+        c 5 3 3 3 5 5 5 5 5 5 5 d c . . 
+        c 5 5 5 5 5 5 5 5 5 d d d c . . 
+        . c 5 5 5 5 b 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c . . 
+        . c b b c 5 5 b b d d d d c c c 
+        . c c c c c c d d d d d d d d c 
+        . . . . c c b 5 5 b d d d c c . 
+        . . . . c d 5 5 b b c c c . . . 
+        . . . . c c c c c c c . . . . . 
+        . . . . c b b b c . . . . . . . 
+        `,img`
+        . . . . c c c c c . . . . . . . 
+        . . c c 5 5 5 5 5 c . . . . . . 
+        . c 5 5 5 5 1 f 5 5 c . . . . . 
+        c 5 5 5 5 5 f f 5 5 5 c . . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 c . . . 
+        c 5 3 3 3 5 5 5 5 5 5 5 d c . . 
+        c 5 5 5 5 5 5 5 5 5 d d d c . . 
+        . c 5 5 5 5 b 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c . . 
+        . c b b c 5 5 b b d d d d c c . 
+        . c c c c c b b d d d d d d c c 
+        . . . c c 5 5 b 5 5 d d d d d c 
+        . . . . c b 5 5 b b c c c c c c 
+        . . . . c c c c c c . . . . . . 
+        . . . . . c b b b c . . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . c c c c . . . . . . . . 
+        . . c c 5 5 5 5 c c . . . . . . 
+        . c 5 5 5 5 5 5 5 5 c . . . . . 
+        c 5 5 5 5 5 1 f 5 5 5 c . . . . 
+        c 5 5 5 5 5 f f 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 c . . . 
+        c c 3 3 b b 5 5 5 5 5 5 d c . . 
+        c 5 3 3 3 5 5 5 5 5 d d d c . . 
+        . b 5 5 5 5 5 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c . . 
+        . c b b c 5 5 b b d d d d c c c 
+        . c c c c c c d d d d d d d d c 
+        . . . c c c c d 5 5 b d d d c c 
+        . . . c b c c b 5 5 b c c c . . 
+        . . . c c c d 5 5 b c . . . . . 
+        `,img`
+        . . . . . . . . . . . . . . . . 
+        . . . . c c c c . . . . . . . . 
+        . . c c 5 5 5 5 c c . . . . . . 
+        . c 5 5 5 5 5 5 5 5 c . . . . . 
+        c 5 5 5 5 5 1 f 5 5 5 c . . . . 
+        c 5 5 5 5 5 f f 5 5 5 5 c . . . 
+        c 5 5 5 5 5 5 5 5 5 5 5 c . . . 
+        c c b b 1 b 5 5 5 5 5 5 d c . . 
+        c 5 3 3 3 5 5 5 5 5 d d d c . . 
+        . b 5 5 5 5 5 5 5 5 d d d c . . 
+        . . c b b c 5 5 b d d d d c . . 
+        . c b b c 5 5 b b d d d d c c c 
+        . c c c c c c d d d d d d d d c 
+        . . . c c c c d 5 5 b d d c c . 
+        . . c b b c c c 5 5 b c c . . . 
+        . . c c c c c d 5 5 c . . . . . 
+        `],
+    200,
     true
     )
 })
