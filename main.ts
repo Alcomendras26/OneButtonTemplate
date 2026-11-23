@@ -3,25 +3,6 @@ namespace SpriteKind {
     export const Child = SpriteKind.create()
 }
 controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-    FIRE_BALL = sprites.create(img`
-        . . . . . . . . . . . . . . . . 
-        . . . . . . . . . . . . . . . . 
-        . . . . . 4 4 4 4 4 . . . . . . 
-        . . . 4 4 4 5 5 5 d 4 4 4 4 . . 
-        . . 4 d 5 d 5 5 5 d d d 4 4 . . 
-        . . 4 5 5 1 1 1 d d 5 5 5 4 . . 
-        . 4 5 5 5 1 1 1 5 1 1 5 5 4 4 . 
-        . 4 d d 1 1 5 5 5 1 1 5 5 d 4 . 
-        . 4 5 5 1 1 5 1 1 5 5 d d d 4 . 
-        . 2 5 5 5 d 1 1 1 5 1 1 5 5 2 . 
-        . 2 d 5 5 d 1 1 1 5 1 1 5 5 2 . 
-        . . 2 4 d d 5 5 5 5 d d 5 4 . . 
-        . . . 2 2 4 d 5 5 d d 4 4 . . . 
-        . . 2 2 2 2 2 4 4 4 2 2 2 . . . 
-        . . . 2 2 4 4 4 4 4 4 2 2 . . . 
-        . . . . . 2 2 2 2 2 2 . . . . . 
-        `, SpriteKind.Projectile)
-    FIRE_BALL.setVelocity(90, 0)
     music.play(music.createSoundEffect(WaveShape.Square, 1600, 2177, 255, 90, 300, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.UntilDone)
     animation.runImageAnimation(
     Kaiju,
@@ -179,6 +160,27 @@ controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
     100,
     false
     )
+    pause(500)
+    FIRE_BALL = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . 4 4 4 4 4 . . . . . . 
+        . . . 4 4 4 5 5 5 d 4 4 4 4 . . 
+        . . 4 d 5 d 5 5 5 d d d 4 4 . . 
+        . . 4 5 5 1 1 1 d d 5 5 5 4 . . 
+        . 4 5 5 5 1 1 1 5 1 1 5 5 4 4 . 
+        . 4 d d 1 1 5 5 5 1 1 5 5 d 4 . 
+        . 4 5 5 1 1 5 1 1 5 5 d d d 4 . 
+        . 2 5 5 5 d 1 1 1 5 1 1 5 5 2 . 
+        . 2 d 5 5 d 1 1 1 5 1 1 5 5 2 . 
+        . . 2 4 d d 5 5 5 5 d d 5 4 . . 
+        . . . 2 2 4 d 5 5 d d 4 4 . . . 
+        . . 2 2 2 2 2 4 4 4 2 2 2 . . . 
+        . . . 2 2 4 4 4 4 4 4 2 2 . . . 
+        . . . . . 2 2 2 2 2 2 . . . . . 
+        `, SpriteKind.Projectile)
+    FIRE_BALL.setVelocity(90, 0)
+    FIRE_BALL.setPosition(16, 64)
     scroller.scrollBackgroundWithSpeed(0, 0)
     scene.cameraShake(4, 100)
     pause(700)
@@ -349,11 +351,61 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Friend, function (sprite, otherS
     info.changeScoreBy(1)
 })
 sprites.onOverlap(SpriteKind.Projectile, SpriteKind.Enemy, function (sprite, otherSprite) {
+    animation.runImageAnimation(
+    car,
+    [img`
+        . . . . 2 2 2 2 2 2 2 2 . . . . 
+        . . . 2 4 4 4 5 5 4 4 4 2 2 2 . 
+        . 2 2 5 5 d 4 5 5 5 4 4 4 4 2 . 
+        . 2 4 5 5 5 5 d 5 5 5 4 5 4 2 2 
+        . 2 4 d d 5 5 5 5 5 5 d 4 4 4 2 
+        2 4 5 5 d 5 5 5 d d d 5 5 5 4 4 
+        2 4 5 5 4 4 4 d 5 5 d 5 5 5 4 4 
+        4 4 4 4 . . 2 4 5 5 . . 4 4 4 4 
+        . . b b b b 2 4 4 2 b b b b . . 
+        . b d d d d 2 4 4 2 d d d d b . 
+        b d d b b b 2 4 4 2 b b b d d b 
+        b d d b b b b b b b b b b d d b 
+        b b d 1 1 3 1 1 d 1 d 1 1 d b b 
+        . . b b d d 1 1 3 d d 1 b b . . 
+        . . 2 2 4 4 4 4 4 4 4 4 2 2 . . 
+        . . . 2 2 4 4 4 4 4 2 2 2 . . . 
+        `],
+    5000,
+    false
+    )
     car.destroy()
+    FIRE_BALL.destroy()
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
     otherSprite.destroy()
     info.changeLifeBy(-1)
+    Kaiju.setImage(img`
+        ........................
+        ........................
+        ........................
+        ...........ccc..........
+        ...........cccc.........
+        .......ccc..ccccccc.....
+        .......cccccc555555cc...
+        ........ccb5555555555c..
+        .....cc..b555555555555c.
+        .....cccb55555bcc555555c
+        ......cb555555555c55d55c
+        ......b5555555555555555c
+        ...cc.b555dd5555bb1bbbc.
+        ....ccd55ddddd5bbbb335c.
+        ...ccbdddddddd5bbbb335c.
+        .ccccddddddddd55bb3335c.
+        cdcccdddddb55bb55b3335c.
+        cddbddddddb555bb553335c.
+        cddddddddddb5555b5555c..
+        ccddddddbd55bb55cbccc...
+        .ccddddbbbdd55ccbbc.....
+        ...ccbbbcbddddccdddc....
+        .....ccccdd555dccccc....
+        ........cccccccc........
+        `)
 })
 let Voiture: Sprite = null
 let car: Sprite = null
@@ -362,6 +414,8 @@ let FIRE_BALL: Sprite = null
 let Kaiju: Sprite = null
 info.startCountdown(30)
 let ChangeAmount = 5
+game.setGameOverPlayable(true, music.createSong(hex`0096000408040300001c00010a006400f401640000040000000000000000000000000005000004910004000800031d242a0c0010000220271000140001241c002000012420002400012024002800021d2428002c0001272c00300001203000340001243400380001273c004000012444004800012748004c000222254c005000012054005800011d58005c00011e5c006000012560006400011964006800021d2268006c00012070007400021e2074007800012578007c00012403001c0001dc00690000045e01000400000000000000000000056400010400039c0018001c00012a1c002000012a20002400012a24002800012a28002c00012a2c003000012a30003400012a34003800012a38003c00012a3c004000012a40004400012a44004800012a48004c00012a4c005000012a50005400012a54005800012a58005c00012a5c006000012a60006400012a64006800012a68006c00012a6c007000012a70007400012a74007800012a78007c00012a7c008000012a05001c000f0a006400f4010a0000040000000000000000000000000000000002080000000400031d242a`), false)
+game.setGameOverPlayable(false, music.createSong(hex`0096000408040300001c00010a006400f401640000040000000000000000000000000005000004910004000800031d242a0c0010000220271000140001241c002000012420002400012024002800021d2428002c0001272c00300001203000340001243400380001273c004000012444004800012748004c000222254c005000012054005800011d58005c00011e5c006000012560006400011964006800021d2268006c00012070007400021e2074007800012578007c00012403001c0001dc00690000045e01000400000000000000000000056400010400039c0018001c00012a1c002000012a20002400012a24002800012a28002c00012a2c003000012a30003400012a34003800012a38003c00012a3c004000012a40004400012a44004800012a48004c00012a4c005000012a50005400012a54005800012a58005c00012a5c006000012a60006400012a64006800012a68006c00012a6c007000012a70007400012a74007800012a78007c00012a7c008000012a05001c000f0a006400f4010a0000040000000000000000000000000000000002080000000400031d242a`), false)
 Kaiju = sprites.create(img`
     ........................
     ........................
@@ -511,6 +565,7 @@ scene.setBackgroundImage(img`
     bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
     `)
 scroller.scrollBackgroundWithSpeed(-50, 0)
+Kaiju.setPosition(16, 64)
 animation.runImageAnimation(
 Kaiju,
 [img`
@@ -667,7 +722,6 @@ Kaiju,
 200,
 true
 )
-music.play(music.createSoundEffect(WaveShape.Square, 200, 487, 255, 110, 100, SoundExpressionEffect.None, InterpolationCurve.Curve), music.PlaybackMode.UntilDone)
 forever(function () {
     pause(500)
     car = sprites.createProjectileFromSide(img`
